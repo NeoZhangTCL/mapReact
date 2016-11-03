@@ -2,17 +2,13 @@ function initMap() {
 
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 12,
-    center: uluru,
-    minZoom: 8
+    center: {lat: 42.984, lng: -81.250},
+    minZoom: 8,
+    mapTypeControl: false,
+    streetViewControl: false
   });
 
-  map.addListener('bounds_changed', function() {
-  // 3 seconds after the center of the map has changed, pan back to the
-  // marker.
-  window.setTimeout(function() {
-    map.panTo(marker.getPosition());
-  }, 3000);
-});
+  map.addListener('bounds_changed', refreshList() , 3000);
 
 }
 
