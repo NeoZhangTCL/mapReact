@@ -72,10 +72,10 @@ var locations = [{
 function initMap() {
 
     var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 12,
+        zoom: 8,
         center: {
-            lat: 42.984,
-            lng: -81.250
+            lat: -34.171798,
+            lng: 150.407391
         },
         minZoom: 4,
         mapTypeControl: false,
@@ -100,6 +100,7 @@ function initMap() {
     var markerCluster = new MarkerClusterer(map, markers, {
         imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
     });
+
     map.addListener('bounds_changed', refreshList(), 3000);
 }
 
