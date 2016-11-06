@@ -146,7 +146,7 @@ function initMap() {
                 lat: obj.Lat,
                 lng:  obj.Lng
             },
-            label: labels[i % labels.length]
+            label: obj.Name
         });
         attachMarkerCnterlizer(marker);
         return marker;
@@ -157,6 +157,8 @@ function initMap() {
         imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
     });
 
+    refreshList();
+
 }
 
 function attachMarkerCnterlizer(marker) {
@@ -165,15 +167,19 @@ function attachMarkerCnterlizer(marker) {
   });
 }
 
-function setMark() {
-
-}
-
 function search() {
 
 }
 
+/*
+<a href="#!" class="collection-item">CAD</a>
+*/
 function refreshList() {
     var bounds = map.getBounds();
-
+    var items = data.map(function(obj) {
+        var item = $("<a></a>").text(obj.Name + " " + obj.Address);
+        item.attr('href','#!');
+        item.addClass("collection-item");
+        $(".collection").append(item);
+    });
 }
