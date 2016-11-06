@@ -29,32 +29,34 @@
     </nav>
 
     <div class="row">
-        <ul class="col s2 collapsible" data-collapsible="accordion" id="sidebar">
-            <li>
-                <div class="collapsible-header">First</div>
-                <div class="collapsible-body">
-                    <p>Lorem ipsum dolor sit amet.</p>
-                </div>
-            </li>
-            <li>
-                <div class="collapsible-header">Second</div>
-                <div class="collapsible-body">
-                    <p>Lorem ipsum dolor sit amet.</p>
-                </div>
-            </li>
-        </ul>
-        <div class="col s10" id="map"></div>
+        <div id="sidebar">
+            <ul class="collapsible popout" data-collapsible="accordion">
+              <li>
+                <div class="collapsible-header"><i class="material-icons">filter_drama</i>First</div>
+                <div class="collapsible-body" style="background-color:white"><p>Lorem ipsum dolor sit amet.</p></div>
+              </li>
+              <li>
+                <div class="collapsible-header"><i class="material-icons">place</i>Second</div>
+                <div class="collapsible-body" style="background-color:white"><p>Lorem ipsum dolor sit amet.</p></div>
+              </li>
+              <li>
+                <div class="collapsible-header"><i class="material-icons">whatshot</i>Third</div>
+                <div class="collapsible-body" style="background-color:white"><p>Lorem ipsum dolor sit amet.</p></div>
+              </li>
+            </ul>
+            <a class="center-align waves-effect waves-light btn">button</a>
+        </div>
+        <div id="map"></div>
     </div>
 
-    <!--Import jQuery before materialize.js-->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="js/materialize.min.js"></script>
-    <script src="./js/main.js"></script>
-    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
-    </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhoTed3uw_9ICqBLFgft_hiY58qOGrJgg&callback=initMap">
-    </script>
-
 </body>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="js/materialize.min.js"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhoTed3uw_9ICqBLFgft_hiY58qOGrJgg&callback=initMap">
+</script>
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+</script>
+<script src="./js/main.js"></script>
 
 </html>

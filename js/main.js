@@ -1,77 +1,128 @@
-var locations = [{
-    lat: -31.563910,
-    lng: 147.154312
+var map;
+var data = [{
+    Lat: -31.563910,
+    Lng: 147.154312,
+    Name: "Neo's",
+    Address: "1023 C Street"
 }, {
-    lat: -33.718234,
-    lng: 150.363181
+    Lat: -33.718234,
+    Lng: 150.363181,
+    Name: "Blizzard",
+    Address: "13 Ruby Street"
 }, {
-    lat: -33.727111,
-    lng: 150.371124
+    Lat: -33.727111,
+    Lng: 150.371124,
+    Name: "Slack",
+    Address: "323 C++ Street N"
 }, {
-    lat: -33.848588,
-    lng: 151.209834
+    Lat: -33.848588,
+    Lng: 151.209834,
+    Name: "Neo's",
+    Address: "1023 Python Street N"
 }, {
-    lat: -33.851702,
-    lng: 151.216968
+    Lat: -33.851702,
+    Lng: 151.216968,
+    Name: "Deloitte",
+    Address: "542 Java Road"
 }, {
-    lat: -34.671264,
-    lng: 150.863657
+    Lat: -34.671264,
+    Lng: 150.863657,
+    Name: "IBM",
+    Address: "978 Haskle Street"
 }, {
-    lat: -35.304724,
-    lng: 148.662905
+    Lat: -35.304724,
+    Lng: 148.662905,
+    Name: "Intel",
+    Address: "116 Python Street S"
 }, {
-    lat: -36.817685,
-    lng: 175.699196
+    Lat: -36.817685,
+    Lng: 175.699196,
+    Name: "AMD",
+    Address: "534 Go Road"
 }, {
-    lat: -36.828611,
-    lng: 175.790222
+    Lat: -36.828611,
+    Lng: 175.790222,
+    Name: "Paypal",
+    Address: "2041 Swift Street"
 }, {
-    lat: -37.750000,
-    lng: 145.116667
+    Lat: -37.750000,
+    Lng: 145.116667,
+    Name: "SpaceX",
+    Address: "673 MatLab Street"
 }, {
-    lat: -37.759859,
-    lng: 145.128708
+    Lat: -37.759859,
+    Lng: 145.128708,
+    Name: "Alibaba",
+    Address: "1023 PHP Ave"
 }, {
-    lat: -37.765015,
-    lng: 145.133858
+    Lat: -37.765015,
+    Lng: 145.133858,
+    Name: "Github",
+    Address: "442 Java Ct"
 }, {
-    lat: -37.770104,
-    lng: 145.143299
+    Lat: -37.770104,
+    Lng: 145.143299,
+    Name: "Linkedin",
+    Address: "935 C# Street"
 }, {
-    lat: -37.773700,
-    lng: 145.145187
+    Lat: -37.773700,
+    Lng: 145.145187,
+    Name: "Yelp",
+    Address: "105 JavaScript Street"
 }, {
-    lat: -37.774785,
-    lng: 145.137978
+    Lat: -37.774785,
+    Lng: 145.137978,
+    Name: "Microsoft",
+    Address: "87 Scala Street"
 }, {
-    lat: -37.819616,
-    lng: 144.968119
+    Lat: -37.819616,
+    Lng: 144.968119,
+    Name: "Google",
+    Address: "42 R Street"
 }, {
-    lat: -38.330766,
-    lng: 144.695692
+    Lat: -38.330766,
+    Lng: 144.695692,
+    Name: "CNN",
+    Address: "942 Objective-C Street"
 }, {
-    lat: -39.927193,
-    lng: 175.053218
+    Lat: -39.927193,
+    Lng: 175.053218,
+    Name: "Tesla",
+    Address: "10 JavaScript Street"
 }, {
-    lat: -41.330162,
-    lng: 174.865694
+    Lat: -41.330162,
+    Lng: 174.865694,
+    Name: "Bell",
+    Address: "6 LaTeX Street"
 }, {
-    lat: -42.734358,
-    lng: 147.439506
+    Lat: -42.734358,
+    Lng: 147.439506,
+    Name: "Yahoo",
+    Address: "1023 Perl Street"
 }, {
-    lat: -42.734358,
-    lng: 147.501315
+    Lat: -42.734358,
+    Lng: 147.501315,
+    Name: "Apple",
+    Address: "102 Bash Street"
 }, {
-    lat: -42.735258,
-    lng: 147.438000
+    Lat: -42.735258,
+    Lng: 147.438000,
+    Name: "Alphabet",
+    Address: "762 Brainf**k Street"
 }, {
-    lat: -43.999792,
-    lng: 170.463352
-}]
+    Lat: -43.999792,
+    Lng: 170.463352,
+    Name: "Airbnb",
+    Address: "65 Lisp Street"
+}];
+
+$(document).ready(function(){
+  $('.collapsible').collapsible();
+});
 
 function initMap() {
 
-    var map = new google.maps.Map(document.getElementById('map'), {
+    map = new google.maps.Map(document.getElementById('map'), {
         zoom: 8,
         center: {
             lat: -34.171798,
@@ -83,17 +134,22 @@ function initMap() {
     });
 
     // Create an array of alphabetical characters used to label the markers.
-    var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+     var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     // Add some markers to the map.
     // Note: The code uses the JavaScript Array.prototype.map() method to
     // create an array of markers based on a given "locations" array.
     // The map() method here has nothing to do with the Google Maps API.
-    var markers = locations.map(function(location, i) {
-        return new google.maps.Marker({
-            position: location,
+    var markers = data.map(function(obj, i) {
+        var marker = new google.maps.Marker({
+            position: {
+                lat: obj.Lat,
+                lng:  obj.Lng
+            },
             label: labels[i % labels.length]
         });
+        attachMarkerCnterlizer(marker);
+        return marker;
     });
 
     // Add a marker clusterer to manage the markers.
@@ -101,7 +157,12 @@ function initMap() {
         imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
     });
 
-    map.addListener('bounds_changed', refreshList(), 3000);
+}
+
+function attachMarkerCnterlizer(marker) {
+  marker.addListener('click', function() {
+    marker.get('map').panTo(marker.position);
+  });
 }
 
 function setMark() {
@@ -112,10 +173,7 @@ function search() {
 
 }
 
-function getMapBoundry() {
-
-}
-
 function refreshList() {
+    var bounds = map.getBounds();
 
 }
