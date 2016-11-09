@@ -120,6 +120,12 @@ var currData = data;
 
 $(document).ready(function() {
     $('.collapsible').collapsible();
+    search();
+    $('#getWhole').click(function(){
+        currData = data;
+        map.setZoom(4);
+        refreshList();
+    });
 });
 
 function initMap() {
@@ -145,6 +151,7 @@ function initMap() {
                 lat: obj.Lat,
                 lng: obj.Lng
             },
+            map: map,
             label: obj.Name
         });
         attachMarkerCnterlizer(marker);
@@ -153,11 +160,11 @@ function initMap() {
 
 
     // Add a marker clusterer to manage the markers.
+    /*
     var markerCluster = new MarkerClusterer(map, markers, {
         imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
     });
-
-    console.log(map);
+    */
     google.maps.event.addListener(map, 'bounds_changed', function() {
         refreshList();
     });
@@ -179,16 +186,19 @@ function attachMarkerCnterlizer(marker) {
 
 
 function search() {
-    $("#search").on('keypress', function(e) {
+    $("#search").keypress(function(e) {
         if (e.which === 13) {
-            var keyword = $("#search").val();
+            var keyword = $("#search").val().toUpperCase();
             console.log(keyword);
             currData = $.grep(data, function(v) {
-                if (v.Name.indexOf(keyword) >= 0 || v.Address.indexOf(keyword)) {
-                    return v;
-                }
+                var tarName = v.Name.toUpperCase();
+                var tarAddress = v.Address.toUpperCase();
+                console.log(tarName);
+                console.log(tarAddress);
+                return (tarName.indexOf(keyword) >= 0 || tarAddress.indexOf(keyword)>=0);
             });
-            console.log(currData);
+            console.log(currData)
+            refreshList();
         }
     });
 }
@@ -196,7 +206,6 @@ function search() {
 /*
 <li>
   <div class="collapsible-header">First</div>
-
   <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
 </li>
 */
@@ -220,7 +229,7 @@ function refreshList() {
                 lng: obj.Lng
             });
         });
-        if (bounds.contains(new google.maps.LatLng(obj.Lat, obj.Lng))) {
+        if(bounds.contains(new google.maps.LatLng(obj.Lat, obj.Lng))){
             $(".collapsible").append(lItem);
         }
     });
