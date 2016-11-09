@@ -133,9 +133,6 @@ function initMap() {
         streetViewControl: false
     });
 
-    // Create an array of alphabetical characters used to label the markers.
-     var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
     // Add some markers to the map.
     // Note: The code uses the JavaScript Array.prototype.map() method to
     // create an array of markers based on a given "locations" array.
@@ -164,25 +161,36 @@ function initMap() {
 function attachMarkerCnterlizer(marker) {
   marker.addListener('click', function() {
     marker.get('map').panTo(marker.position);
+
   });
 }
+
+
 
 function search() {
 
 }
 
 /*
-<a href="#!" class="collection-item">CAD</a>
+<li>
+  <div class="collapsible-header">First</div>
+  <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+</li>
 */
 function refreshList() {
     var bounds = map.getBounds();
     var items = data.map(function(obj) {
-        var item = $("<a></a>").text(obj.Name + " " + obj.Address);
-        item.attr('href','#!');
-        item.addClass("collection-item");
-        item.click(function(){
-          map.setCenter({lat:obj.Lat,lng:obj.Lng});
+        var lItem = $("<li></li>");
+        var header = $("<div></div>").text(obj.Name);
+        header.addClass("collapsible-header");
+        var add = $("<p></p>").text("Location: " + obj.Address);
+        var address = $("<div></div>").append(add);
+        address.addClass("collapsible-body");
+        lItem.append(header);
+        lItem.append(address);
+        lItem.click(function(){
+          map.panTo({lat:obj.Lat,lng:obj.Lng});
         });
-        $(".collection").append(item);
+        $(".collapsible").append(lItem);
     });
 }
