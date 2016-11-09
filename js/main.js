@@ -17,7 +17,7 @@ var data = [{
 }, {
     Lat: -33.848588,
     Lng: 151.209834,
-    Name: "Neo's",
+    Name: "Neo",
     Address: "1023 Python Street N"
 }, {
     Lat: -33.851702,
@@ -116,8 +116,11 @@ var data = [{
     Address: "65 Lisp Street"
 }];
 
-$(document).ready(function(){
-  $('.collapsible').collapsible();
+var currData = data;
+
+$(document).ready(function() {
+    $('.collapsible').collapsible();
+    initMap();
 });
 
 function initMap() {
@@ -137,17 +140,18 @@ function initMap() {
     // Note: The code uses the JavaScript Array.prototype.map() method to
     // create an array of markers based on a given "locations" array.
     // The map() method here has nothing to do with the Google Maps API.
-    var markers = data.map(function(obj, i) {
+    var markers = currData.map(function(obj, i) {
         var marker = new google.maps.Marker({
             position: {
                 lat: obj.Lat,
-                lng:  obj.Lng
+                lng: obj.Lng
             },
             label: obj.Name
         });
         attachMarkerCnterlizer(marker);
         return marker;
     });
+
 
     // Add a marker clusterer to manage the markers.
     var markerCluster = new MarkerClusterer(map, markers, {
@@ -159,37 +163,56 @@ function initMap() {
 }
 
 function attachMarkerCnterlizer(marker) {
-  marker.addListener('click', function() {
-    marker.get('map').panTo(marker.position);
-
-  });
+    marker.addListener('click', function() {
+        marker.get('map').panTo(marker.position);
+        var n = marker.getLabel();
+        console.log(n);
+        var id = "#" + n;
+        console.log(id);
+        console.log($(id));
+        $(id).click();
+    });
 }
 
 
 
 function search() {
-
+    $("#search").on('keypress', function(e) {
+        if (e.which === 13) {
+            var keyword = $("#search").val();
+            console.log(keyword);
+            currData = $.grep(data, function(v) {
+                return data.name === "Joe" && v.age < 30;
+            });
+        }
+    });
 }
 
 /*
 <li>
   <div class="collapsible-header">First</div>
+
   <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
 </li>
 */
 function refreshList() {
     var bounds = map.getBounds();
-    var items = data.map(function(obj) {
+    var items = currData.map(function(obj) {
         var lItem = $("<li></li>");
         var header = $("<div></div>").text(obj.Name);
         header.addClass("collapsible-header");
+        header.attr("id", obj.Name);
+
         var add = $("<p></p>").text("Location: " + obj.Address);
         var address = $("<div></div>").append(add);
         address.addClass("collapsible-body");
         lItem.append(header);
         lItem.append(address);
-        lItem.click(function(){
-          map.panTo({lat:obj.Lat,lng:obj.Lng});
+        lItem.click(function() {
+            map.panTo({
+                lat: obj.Lat,
+                lng: obj.Lng
+            });
         });
         $(".collapsible").append(lItem);
     });
