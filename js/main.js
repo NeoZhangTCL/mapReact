@@ -120,7 +120,6 @@ var currData = data;
 
 $(document).ready(function() {
     $('.collapsible').collapsible();
-    initMap();
 });
 
 function initMap() {
@@ -158,7 +157,10 @@ function initMap() {
         imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
     });
 
-    refreshList();
+    console.log(map);
+    google.maps.event.addListener(map, 'bounds_changed', function() {
+        refreshList();
+    });
 
 }
 
@@ -182,8 +184,11 @@ function search() {
             var keyword = $("#search").val();
             console.log(keyword);
             currData = $.grep(data, function(v) {
-                return data.name === "Joe" && v.age < 30;
+                if (v.Name.indexOf(keyword) >= 0 || v.Address.indexOf(keyword)) {
+                    return v;
+                }
             });
+            console.log(currData);
         }
     });
 }
@@ -196,13 +201,14 @@ function search() {
 </li>
 */
 function refreshList() {
+    //clean all list First
+    $(".collapsible").empty();
     var bounds = map.getBounds();
     var items = currData.map(function(obj) {
         var lItem = $("<li></li>");
         var header = $("<div></div>").text(obj.Name);
         header.addClass("collapsible-header");
         header.attr("id", obj.Name);
-
         var add = $("<p></p>").text("Location: " + obj.Address);
         var address = $("<div></div>").append(add);
         address.addClass("collapsible-body");
@@ -214,6 +220,8 @@ function refreshList() {
                 lng: obj.Lng
             });
         });
-        $(".collapsible").append(lItem);
+        if (bounds.contains(new google.maps.LatLng(obj.Lat, obj.Lng))) {
+            $(".collapsible").append(lItem);
+        }
     });
 }
