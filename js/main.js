@@ -180,6 +180,9 @@ function refreshList() {
         var item = $("<a></a>").text(obj.Name + " " + obj.Address);
         item.attr('href','#!');
         item.addClass("collection-item");
+        item.click(function(){
+          map.setCenter({lat:obj.Lat,lng:obj.Lng});
+        });
         $(".collection").append(item);
     });
 }

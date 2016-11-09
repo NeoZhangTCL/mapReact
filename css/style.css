@@ -21,6 +21,7 @@ html {
      left: 0px;
      bottom: 0;
      background: white;
+     padding-bottom: 48px
      z-index: 99;
      overflow:auto;
 }
@@ -29,6 +30,7 @@ html {
     position: absolute;
     bottom: 10px;
     left: 48px;
+    z-index: 999;
 }
 
 #map {
