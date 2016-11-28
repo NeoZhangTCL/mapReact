@@ -151,7 +151,6 @@ function initMap() {
                 lat: obj.Lat,
                 lng: obj.Lng
             },
-            map: map,
             label: obj.Name
         });
         attachMarkerCnterlizer(marker);
@@ -160,11 +159,10 @@ function initMap() {
 
 
     // Add a marker clusterer to manage the markers.
-    /*
     var markerCluster = new MarkerClusterer(map, markers, {
         imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
     });
-    */
+    
     google.maps.event.addListener(map, 'bounds_changed', function() {
         refreshList();
     });
@@ -186,6 +184,7 @@ function attachMarkerCnterlizer(marker) {
 
 
 function search() {
+
     $("#search").keypress(function(e) {
         if (e.which === 13) {
             var keyword = $("#search").val().toUpperCase();
