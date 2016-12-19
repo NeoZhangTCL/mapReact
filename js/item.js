@@ -1,18 +1,11 @@
-function Item(lat,lng,name,address){
-    Item.prototype.lat = lat;
-    Item.prototype.lng = lng;
-    Item.prototype.name = name;
-    Item.prototype.address = address;
+function Item(lat, lng, name, address){
+    this.position = new google.maps.LatLng(lat, lng);
+    this.name = name;
+    this.address = address;
+    this.listItem = createListItem();
+    this.marker = createMarker();
 
-    Item.prototype.marker = new google.maps.Marker({
-        position: {
-            lat: this.lat,
-            lng: this.lng
-        },
-        label: this.name
-    });
-
-    Item.prototype.items = function() {
+    function createListItem() {
         var lItem = $("<li></li>");
         var header = $("<div></div>").text(this.name);
         header.addClass("collapsible-header");
@@ -23,10 +16,20 @@ function Item(lat,lng,name,address){
         lItem.append(header);
         lItem.append(address);
         lItem.click(function() {
-            map.panTo({
-                lat: this.lat,
-                lng: this.lng
-            });
+            this.marker.getMap().panTo(this.position);
         });
+        return lItem;
     }
+
+    function createMarker(){
+        var _marker = new google.maps.Marker({
+            position: position,
+            label: this.name
+        });
+        _marker.addListener('click', function() {
+            this.listItem.click();
+        });
+        return _marker;
+    }
+
 }

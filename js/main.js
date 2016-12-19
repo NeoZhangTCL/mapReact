@@ -1,4 +1,3 @@
-var map;
 var data = [{
     Lat: -31.563910,
     Lng: 147.154312,
@@ -116,8 +115,6 @@ var data = [{
     Address: "65 Lisp Street"
 }];
 
-var currData = data;
-
 $(document).ready(function() {
     $('.collapsible').collapsible();
     search();
@@ -127,6 +124,7 @@ $(document).ready(function() {
         refreshList();
     });
 });
+var im;
 
 function initMap() {
 
@@ -141,28 +139,13 @@ function initMap() {
         streetViewControl: false
     });
 
-    // Add some markers to the map.
-    // Note: The code uses the JavaScript Array.prototype.map() method to
-    // create an array of markers based on a given "locations" array.
-    // The map() method here has nothing to do with the Google Maps API.
-    var markers = currData.map(function(obj, i) {
-        var marker = new google.maps.Marker({
-            position: {
-                lat: obj.Lat,
-                lng: obj.Lng
-            },
-            label: obj.Name
-        });
-        attachMarkerCnterlizer(marker);
-        return marker;
-    });
-
+    im = ItemManager(map, data);
 
     // Add a marker clusterer to manage the markers.
-    var markerCluster = new MarkerClusterer(map, markers, {
+    var markerCluster = new MarkerClusterer(map, (item.marker for item in im.currDataList), {
         imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
     });
-    
+
     google.maps.event.addListener(map, 'bounds_changed', function() {
         refreshList();
     });
