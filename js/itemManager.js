@@ -1,53 +1,55 @@
 
 
-function ItemManager(map,data){
-    this.map = map;
-    this.dataList = [];
-	this.currDataList = [];
-	this.drawer = $(".collapsible");
+class ItemManager{
 
-	function loadData(data){
-		data.map(function(obj){
+	constructor(map,data){
+	    this.map = map;
+	    this.dataList = [];
+		this.currDataList = [];
+		this.drawer = $(".collapsible");
+		this.data = data;
+		loadData();
+	}
+
+	loadData(){
+		this.dataList = this.data.map(function(obj){
 			var item = Item(obj.lat, obj.lng, obj.name, obj.address, this.map);
-			return item;
+			dataList.append(item);
 		});
-	};
+	}
 
-	function getMarkers(){
+	getMarkers(){
 		this.currDataList.map(function(item){
 			return item.marker;
 		});
 	}
 
-	function mapRefresh(){
-	    currDataList = $.grep(dataList, function(v) {
+	mapRefresh(){
+	    this.currDataList = $.grep(dataList, function(v) {
 	        return ((this.map.getBounds().contains(v.position))==true);
 	    });
 	}
 
-	function searchRefresh(keyword){
+	searchRefresh(keyword){
 	    var key = keyword.toUpperCase();
-	    currDataList = $.grep(dataList, function(v) {
+	    this.currDataList = $.grep(dataList, function(v) {
 	        var tarName = v.Name.toUpperCase();
 	        var tarAddress = v.Address.toUpperCase();
 	        return (tarName.indexOf(key)>= 0 || tarAddress.indexOf(key)>=0);
 	    });
 	}
 
-	function reset(){
+	reset(){
 	    this.currDataList = this.dataList;
 	}
 
-	function renderDrawer(){
+	renderDrawer(){
 		this.currDataList.map(function(item){
 			drawer.append(item.listItem);
 		});
 	}
 
-	dataList = loadData();
-
 }
-
 
 
 
