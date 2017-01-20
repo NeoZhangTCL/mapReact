@@ -1,3 +1,109 @@
+
+
+$(document).ready(function() {
+    $('.collapsible').collapsible();
+    search();
+    $('#getWhole').click(function(){
+        currData = data;
+        map.setZoom(4);
+        refreshList();
+    });
+});
+var im;
+
+function initMap() {
+
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 8,
+        center: {
+            lat: -34.171798,
+            lng: 150.407391
+        },
+        minZoom: 4,
+        mapTypeControl: false,
+        streetViewControl: false
+    });
+
+    im = new ItemManager(map, data);
+	console.log(im.data);
+	im.mapRefresh();
+
+    // Add a marker clusterer to manage the markers.
+    var markerCluster = new MarkerClusterer(map, im.getMarkers(), {
+        imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+    });
+
+    google.maps.event.addListener(map, 'bounds_changed', function() {
+        im.mapRefresh();
+    });
+
+}
+
+function attachMarkerCnterlizer(marker) {
+    marker.addListener('click', function() {
+        marker.get('map').panTo(marker.position);
+        var n = marker.getLabel();
+        console.log(n);
+        var id = "#" + n;
+        console.log(id);
+        console.log($(id));
+        $(id).click();
+    });
+}
+
+
+
+function search() {
+
+    $("#search").keypress(function(e) {
+        if (e.which === 13) {
+            var keyword = $("#search").val().toUpperCase();
+            console.log(keyword);
+            currData = $.grep(data, function(v) {
+                var tarName = v.Name.toUpperCase();
+                var tarAddress = v.Address.toUpperCase();
+                console.log(tarName);
+                console.log(tarAddress);
+                return (tarName.indexOf(keyword) >= 0 || tarAddress.indexOf(keyword)>=0);
+            });
+            console.log(currData)
+            refreshList();
+        }
+    });
+}
+
+/*
+<li>
+  <div class="collapsible-header">First</div>
+  <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+</li>
+*/
+function refreshList() {
+    //clean all list First
+    $(".collapsible").empty();
+    var bounds = map.getBounds();
+    var items = currData.map(function(obj) {
+        var lItem = $("<li></li>");
+        var header = $("<div></div>").text(obj.Name);
+        header.addClass("collapsible-header");
+        header.attr("id", obj.Name);
+        var add = $("<p></p>").text("Location: " + obj.Address);
+        var address = $("<div></div>").append(add);
+        address.addClass("collapsible-body");
+        lItem.append(header);
+        lItem.append(address);
+        lItem.click(function() {
+            map.panTo({
+                lat: obj.Lat,
+                lng: obj.Lng
+            });
+        });
+        if(bounds.contains(new google.maps.LatLng(obj.Lat, obj.Lng))){
+            $(".collapsible").append(lItem);
+        }
+    });
+}
+
 var data = [{
     Lat: -31.563910,
     Lng: 147.154312,
@@ -114,105 +220,3 @@ var data = [{
     Name: "Airbnb",
     Address: "65 Lisp Street"
 }];
-
-$(document).ready(function() {
-    $('.collapsible').collapsible();
-    search();
-    $('#getWhole').click(function(){
-        currData = data;
-        map.setZoom(4);
-        refreshList();
-    });
-});
-var im;
-
-function initMap() {
-
-    map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 8,
-        center: {
-            lat: -34.171798,
-            lng: 150.407391
-        },
-        minZoom: 4,
-        mapTypeControl: false,
-        streetViewControl: false
-    });
-
-    im = ItemManager(map, data);
-
-    // Add a marker clusterer to manage the markers.
-    var markerCluster = new MarkerClusterer(map, (item.marker for item in im.currDataList), {
-        imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
-    });
-
-    google.maps.event.addListener(map, 'bounds_changed', function() {
-        refreshList();
-    });
-
-}
-
-function attachMarkerCnterlizer(marker) {
-    marker.addListener('click', function() {
-        marker.get('map').panTo(marker.position);
-        var n = marker.getLabel();
-        console.log(n);
-        var id = "#" + n;
-        console.log(id);
-        console.log($(id));
-        $(id).click();
-    });
-}
-
-
-
-function search() {
-
-    $("#search").keypress(function(e) {
-        if (e.which === 13) {
-            var keyword = $("#search").val().toUpperCase();
-            console.log(keyword);
-            currData = $.grep(data, function(v) {
-                var tarName = v.Name.toUpperCase();
-                var tarAddress = v.Address.toUpperCase();
-                console.log(tarName);
-                console.log(tarAddress);
-                return (tarName.indexOf(keyword) >= 0 || tarAddress.indexOf(keyword)>=0);
-            });
-            console.log(currData)
-            refreshList();
-        }
-    });
-}
-
-/*
-<li>
-  <div class="collapsible-header">First</div>
-  <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
-</li>
-*/
-function refreshList() {
-    //clean all list First
-    $(".collapsible").empty();
-    var bounds = map.getBounds();
-    var items = currData.map(function(obj) {
-        var lItem = $("<li></li>");
-        var header = $("<div></div>").text(obj.Name);
-        header.addClass("collapsible-header");
-        header.attr("id", obj.Name);
-        var add = $("<p></p>").text("Location: " + obj.Address);
-        var address = $("<div></div>").append(add);
-        address.addClass("collapsible-body");
-        lItem.append(header);
-        lItem.append(address);
-        lItem.click(function() {
-            map.panTo({
-                lat: obj.Lat,
-                lng: obj.Lng
-            });
-        });
-        if(bounds.contains(new google.maps.LatLng(obj.Lat, obj.Lng))){
-            $(".collapsible").append(lItem);
-        }
-    });
-}

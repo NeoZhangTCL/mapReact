@@ -1,46 +1,63 @@
-import { Item } from "item";
+
 
 function ItemManager(map,data){
     this.map = map;
     this.dataList = [];
-    this.currDataList = [];
-    this.loadData(data);
+	this.currDataList = [];
+	this.drawer = $(".collapsible");
+
+	function loadData(data){
+		data.map(function(obj){
+			var item = Item(obj.lat, obj.lng, obj.name, obj.address, this.map);
+			return item;
+		});
+	};
+
+	function getMarkers(){
+		this.currDataList.map(function(item){
+			return item.marker;
+		});
+	}
+
+	function mapRefresh(){
+	    currDataList = $.grep(dataList, function(v) {
+	        return ((this.map.getBounds().contains(v.position))==true);
+	    });
+	}
+
+	function searchRefresh(keyword){
+	    var key = keyword.toUpperCase();
+	    currDataList = $.grep(dataList, function(v) {
+	        var tarName = v.Name.toUpperCase();
+	        var tarAddress = v.Address.toUpperCase();
+	        return (tarName.indexOf(key)>= 0 || tarAddress.indexOf(key)>=0);
+	    });
+	}
+
+	function reset(){
+	    this.currDataList = this.dataList;
+	}
+
+	function renderDrawer(){
+		this.currDataList.map(function(item){
+			drawer.append(item.listItem);
+		});
+	}
+
+	dataList = loadData();
+
 }
 
-ItemManager.prototype.loadData = function(data){
-    data.map(function(obj){
-        var item = Item(obj.lat, obj.lng, obj.name, obj.address, this.map);
-        this.dataList.append(item);
-    });
-}
-
-ItemManager.prototype.mapRefresh = function(){
-    var bounds = this.map.getBounds();
-    currDataList = $.grep(dataList, function(v) {
-        return (bounds.contains(dataList.position)==true);
-    });
-}
 
 
-ItemManager.prototype.searchRefresh = function(keyword){
-    var key = keyword.toUpperCase();
-    currDataList = $.grep(dataList, function(v) {
-        var tarName = v.Name.toUpperCase();
-        var tarAddress = v.Address.toUpperCase();
-        return (tarName.indexOf(key)>= 0 || tarAddress.indexOf(key)>=0);
-    });
-}
 
-ItemManager.prototype.reset = function(){
-    this.currDataList = this.dataList;
-}
 /*
-ItemManager.prototype.addItem(item){
+this.addItem(item){
     this.markerList.append(Item.marker);
     this.sideList.append(Item.listItem);
 }
 
-ItemManager.prototype.removeItem(item){
+this.removeItem(item){
     var mIndex = this.markerList.indexOf(item.marker);
     if (mIndex > -1) {
         this.markerList.splice(mIndex, 1);
