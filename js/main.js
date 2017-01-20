@@ -117,6 +117,9 @@ var data = [{
 }];
 
 var currData = data;
+var markers;
+var map;
+var markerCluster;
 
 $(document).ready(function() {
     $('.collapsible').collapsible();
@@ -141,51 +144,80 @@ function initMap() {
         streetViewControl: false
     });
 
+	var info = 'You are here';
+	var infowindow = new google.maps.InfoWindow({
+		content: info
+	});
+
     // Add some markers to the map.
     // Note: The code uses the JavaScript Array.prototype.map() method to
     // create an array of markers based on a given "locations" array.
     // The map() method here has nothing to do with the Google Maps API.
-    var markers = currData.map(function(obj, i) {
-        var marker = new google.maps.Marker({
-            position: {
-                lat: obj.Lat,
-                lng: obj.Lng
-            },
-            map: map,
-            label: obj.Name
-        });
-        attachMarkerCnterlizer(marker);
-        return marker;
-    });
+	markers = currData.map(function(obj, i) {
+		var marker = new google.maps.Marker({
+			position: {
+				lat: obj.Lat,
+				lng: obj.Lng
+			},
+			map: map,
+			title: obj.Name,
+			name: obj.Name
+		});
+		marker.addListener('click', function() {
+		  infowindow.open(map, marker);
+		  map.setZoom(12);
+		  map.panTo(marker.position);
+		  console.log(document.getElementById(marker.Name));
+		  document.getElementById(marker.Name).click();
+		});
+		return marker;
+	});
 
+	// Add a marker clusterer to manage the markers.
+	markerCluster = new MarkerClusterer(map, markers, {
+		imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+	});
 
-    // Add a marker clusterer to manage the markers.
-    /*
-    var markerCluster = new MarkerClusterer(map, markers, {
-        imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
-    });
-    */
     google.maps.event.addListener(map, 'bounds_changed', function() {
         refreshList();
     });
 
 }
 
-function attachMarkerCnterlizer(marker) {
-    marker.addListener('click', function() {
-        marker.get('map').panTo(marker.position);
-        var n = marker.getLabel();
-        console.log(n);
-        var id = "#" + n;
-        console.log(id);
-        console.log($(id));
-        $(id).click();
+/*
+function refreshMarkers() {
+	markers = [];
+	markers = currData.map(function(obj, i) {
+        var marker = new google.maps.Marker({
+            position: {
+                lat: obj.Lat,
+                lng: obj.Lng
+            },
+            map: map,
+			title: obj.Name,
+            name: obj.Name
+        });
+		marker.addListener('click', function() {
+          infowindow.open(map, marker);
+		  map.setZoom(12);
+		  map.panTo(marker.position);
+		  console.log(document.getElementById(marker.Name));
+		  document.getElementById(marker.Name).click();
+        });
+        return marker;
     });
+
+
+	markerCluster.setMap(null);
+	// Add a marker clusterer to manage the markers.
+	markerCluster = new MarkerClusterer(map, markers, {
+		imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+	});
+
 }
+	*/
 
-
-
-function search() {
+function search(map) {
     $("#search").keypress(function(e) {
         if (e.which === 13) {
             var keyword = $("#search").val().toUpperCase();
@@ -193,11 +225,9 @@ function search() {
             currData = $.grep(data, function(v) {
                 var tarName = v.Name.toUpperCase();
                 var tarAddress = v.Address.toUpperCase();
-                console.log(tarName);
-                console.log(tarAddress);
                 return (tarName.indexOf(keyword) >= 0 || tarAddress.indexOf(keyword)>=0);
             });
-            console.log(currData)
+			//refreshMarkers(map);
             refreshList();
         }
     });
@@ -211,9 +241,10 @@ function search() {
 */
 function refreshList() {
     //clean all list First
-    $(".collapsible").empty();
+    //$(".collapsible").empty();
     var bounds = map.getBounds();
-    var items = currData.map(function(obj) {
+
+    var items = data.map(function(obj) {
         var lItem = $("<li></li>");
         var header = $("<div></div>").text(obj.Name);
         header.addClass("collapsible-header");
@@ -228,9 +259,17 @@ function refreshList() {
                 lat: obj.Lat,
                 lng: obj.Lng
             });
+			map.setZoom(16);
         });
-        if(bounds.contains(new google.maps.LatLng(obj.Lat, obj.Lng))){
+		var liObj = document.getElementById(obj.Name);
+        if(bounds.contains(new google.maps.LatLng(obj.Lat, obj.Lng)) && !liObj && currData.includes(obj)){
             $(".collapsible").append(lItem);
         }
+		else if (!bounds.contains(new google.maps.LatLng(obj.Lat, obj.Lng)) && liObj){
+			liObj.remove(lItem);
+		}
+		else if (!currData.includes(obj) && liObj){
+			liObj.remove(lItem);
+		}
     });
 }
